@@ -1,0 +1,48 @@
+<!-- The chat widget a business embeds on its website. -->
+<div id="support-chat">
+  <form id="support-start">
+    <label>Your name <input name="customer_name" required></label>
+    <label>Your email <input name="customer_email" type="email" required></label>
+    <button type="submit">Start chat</button>
+  </form>
+  <ol id="support-log" hidden></ol>
+  <form id="support-send" hidden>
+    <input name="message" placeholder="How can we help?" required>
+    <button type="submit">Send</button>
+  </form>
+</div>
+<script>
+  const API = "https://support-assistant.example/chat";
+  const BUSINESS_ID = document.currentScript.dataset.business || "demo-store";
+  let customer = null;
+  let conversationId = null;
+
+  document.getElementById("support-start").addEventListener("submit", (e) => {
+    e.preventDefault();
+    customer = Object.fromEntries(new FormData(e.target));
+    e.target.hidden = true;
+    document.getElementById("support-log").hidden = false;
+    document.getElementById("support-send").hidden = false;
+  });
+
+  document.getElementById("support-send").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const message = e.target.message.value;
+    e.target.reset();
+    show("You", message);
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ business_id: BUSINESS_ID, conversation_id: conversationId, ...customer, message }),
+    });
+    const data = await res.json();
+    conversationId = data.conversation_id;
+    show("Support", data.reply);
+  });
+
+  function show(who, text) {
+    const li = document.createElement("li");
+    li.textContent = `${who}: ${text}`;
+    document.getElementById("support-log").append(li);
+  }
+</script>
