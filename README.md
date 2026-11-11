@@ -26,7 +26,7 @@ its citation.
 
 | Path | What it does |
 |---|---|
-| `app/server.py` | The HTTP API: takes a customer's message, asks the model for a reply, returns it |
+| `app/server.py` | The HTTP API: takes a customer's message, asks the model for a reply, returns it; a business's staff read its own conversations with their staff key |
 | `app/model.py` | The call to the language model that writes each reply |
 | `app/transcripts.py` | Stores every conversation, with the customer's name and email address |
 | `web/widget.html` | The chat widget a business embeds on its website |
@@ -39,6 +39,7 @@ You do not need to run it for a lint. If you want to:
 pip install -r requirements.txt
 export MODEL_API_URL=https://your-model-provider.example/v1/generate
 export MODEL_API_KEY=...
+export STAFF_KEYS="a-long-random-key:demo-store"
 uvicorn app.server:app --reload
 ```
 

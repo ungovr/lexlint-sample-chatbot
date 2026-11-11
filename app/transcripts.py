@@ -55,6 +55,14 @@ def append(conversation_id: str, role: str, text: str) -> None:
         )
 
 
+def business_of(conversation_id: str) -> str | None:
+    with _db() as conn:
+        row = conn.execute(
+            "SELECT business_id FROM conversations WHERE id = ?", (conversation_id,)
+        ).fetchone()
+        return row["business_id"] if row else None
+
+
 def messages(conversation_id: str) -> list[dict]:
     with _db() as conn:
         rows = conn.execute(
